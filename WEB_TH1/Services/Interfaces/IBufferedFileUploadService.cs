@@ -1,4 +1,4 @@
-﻿namespace WEB_TH1.Models
+﻿namespace WEB_TH1.Services.Interfaces
 {
     public interface IBufferedFileUploadService
     {

@@ -1,0 +1,20 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+﻿﻿<h1>Thay đổi Avatar</h1>
+<hr />
+<div class="row">
+    <form class="col-12 col-md-6" method="post" enctype="multipart/form-data">
+        <input class="form-control" type="file" name="file" />
+        <button class="btn btn-outline-primary mt-3" type="submit">Upload File</button>
+    </form>
+
+</div>
+@if (ViewBag.Message != null)
+{
+    <div class="alert" style="margin-top:20px">
+        @ViewBag.Message
+    </div>
+}

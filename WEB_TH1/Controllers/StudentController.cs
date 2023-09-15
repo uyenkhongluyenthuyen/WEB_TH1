@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
 using WEB_TH1.Models;
+using WEB_TH1.Services.Interfaces;
 
 namespace WEB_TH1.Controllers
 {
@@ -8,8 +10,11 @@ namespace WEB_TH1.Controllers
     public class StudentController : Controller
     {
         private List<Student> listStudents = new List<Student>();
-        public StudentController() 
+        readonly IBufferedFileUploadService _bufferedFileUploadService;
+
+        public StudentController(IBufferedFileUploadService bufferedFileUploadService) 
         {
+
             //Tạo danh sách sinh viên với 4 dữ liệu mẫu
             listStudents = new List<Student>(){
                 new Student() { Id = 101, Name = "Hải Nam", Branch = Branch.IT,
@@ -26,9 +31,11 @@ namespace WEB_TH1.Controllers
 
                 new Student() { Id = 104, Name = "Xuân Mai", Branch = Branch.EE,
                 Gender = Gender.Female, IsRegular = false,
-                Address = "A1-2021", Email = "mai@g.com" }
+                Address = "A1-2021", Email = "mai@g.com" },
 
-            };
+             };
+
+            _bufferedFileUploadService = bufferedFileUploadService;
 
         }
         [Route("Index")]
@@ -54,42 +61,37 @@ namespace WEB_TH1.Controllers
             return View();
         }
         [HttpPost("Add")]
-        public IActionResult Create(Student s)
+        public async Task<ActionResult> Create(Student s, IFormFile avatarfile)
         {
-            s.Id = listStudents.Last<Student>().Id + 1;
-            listStudents.Add(s);
-            return View("Index", listStudents);
-        }
-
-        readonly IBufferedFileUploadService _bufferedFileUploadService;
-        public BufferedFileUploadController(IBufferedFileUploadService bufferedFileUploadService)
-        {
-            _bufferedFileUploadService = bufferedFileUploadService;
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<ActionResult> Index(IFormFile file)
-        {
-            try
-            {
-                if (await _bufferedFileUploadService.UploadFile(file))
+            if (avatarfile != null)
+                try
                 {
-                    ViewBag.Message = "File Upload Successful";
+                    if (await _bufferedFileUploadService.UploadFile(avatarfile))
+                    {
+                        Debug.WriteLine("File Upload Successful");
+                        ViewBag.Message = "File Upload Successful";
+                    }
+                    else
+                    {
+                        Debug.WriteLine("File Upload Failed");
+                        ViewBag.Message = "File Upload Failed";
+                    }
                 }
-                else
+                catch
                 {
+                    Debug.WriteLine("File Upload Failed");
+                    //Log ex
                     ViewBag.Message = "File Upload Failed";
                 }
-            }
-            catch (Exception ex)
-            {
-                //Log ex
-                ViewBag.Message = "File Upload Failed";
-            }
-            return View();
+            s.Id = listStudents.Last<Student>().Id + 1;
+
+
+            if (s.AvatarUrl != null)
+                s.AvatarUrl = Path.Combine("UploadedFiles", s.AvatarUrl);
+
+
+            listStudents.Add(s);
+            return View("Index", listStudents);
         }
 
 

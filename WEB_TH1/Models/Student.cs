@@ -12,7 +12,8 @@
         public string? Address { get; set; }//Địa chỉ
         public DateTime DateOfBorth { get; set; }//Ngày sinh
 
-        public BufferedFileUploadLocalService Image { get; set; }
+        public string? AvatarUrl { get; set; }
+
 
     }
 }

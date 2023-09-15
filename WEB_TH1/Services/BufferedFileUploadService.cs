@@ -1,6 +1,7 @@
-﻿namespace WEB_TH1.Models
+﻿using WEB_TH1.Services.Interfaces;
+namespace WEB_TH1.Services
 {
-    public class BufferedFileUploadLocalService : IBufferedFileUploadService
+    public class BufferedFileUploadLocalService :IBufferedFileUploadService
     {
         public async Task<bool> UploadFile(IFormFile file)
         {
@@ -9,7 +10,7 @@
             {
                 if (file.Length > 0)
                 {
-                    path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "UploadedFiles"));
+                    path = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, "wwwroot", "UploadedFiles"));
                     if (!Directory.Exists(path))
                     {
                         Directory.CreateDirectory(path);

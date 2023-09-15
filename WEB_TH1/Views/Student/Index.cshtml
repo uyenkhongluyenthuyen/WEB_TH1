@@ -4,6 +4,7 @@
 @{
 }
 @model IEnumerable<Student>
+
 <a asp-action="Create" class="btn btn-primary">Create Student</a>
 <table class="table table-striped">
     <thead>
@@ -16,6 +17,7 @@
             <th>Hệ ĐT</th>
             <th>Địa chỉ</th>
             <th>Email</th>
+            <th>Avatar</th>
         </tr>
     </thead>
     <tbody>
@@ -51,6 +53,21 @@
                 <td>@(s.IsRegular ? "Chính quy" : "Phi chính quy")</td>
                 <td>@s.Address</td>
                 <td>@s.Email</td>
+                <td>
+                    @if (s.AvatarUrl != null)
+                    {
+                        <a href="/@s.AvatarUrl">
+                            <img src="/@s.AvatarUrl"
+                                 width="50"
+                                 height="50"
+                                 style="border-radius: 5px" />
+                        </a>
+                    }
+                    else
+                    {
+                        <span>None</span>
+                    }
+                </td>
             </tr>
         }
     </tbody>

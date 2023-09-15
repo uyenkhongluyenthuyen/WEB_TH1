@@ -1,5 +1,10 @@
+using WEB_TH1.Services.Interfaces;
+using WEB_TH1.Services;
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+
+builder.Services.AddTransient<IBufferedFileUploadService, BufferedFileUploadLocalService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
