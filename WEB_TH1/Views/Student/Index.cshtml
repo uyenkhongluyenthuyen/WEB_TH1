@@ -31,6 +31,7 @@
             <th>Hệ ĐT</th>
             <th>Địa chỉ</th>
             <th>Email</th>
+            <th>Diem</th>
             <th>Avatar</th>
         </tr>
     </thead>
@@ -67,6 +68,7 @@
                 <td>@(s.IsRegular ? "Chính quy" : "Phi chính quy")</td>
                 <td>@s.Address</td>
                 <td>@s.Email</td>
+                <td>@s.Diem</td>
                 <td>
                     @if (s.AvatarUrl != null)
                     {

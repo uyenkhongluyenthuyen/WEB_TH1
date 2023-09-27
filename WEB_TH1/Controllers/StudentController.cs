@@ -48,6 +48,7 @@ namespace WEB_TH1.Controllers
         [HttpGet("Add")]
         public IActionResult Create()
         {
+           
             //lấy danh sách các giá trị Gender để hiển thị radio button trên form
             ViewBag.AllGenders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
             //lấy danh sách các giá trị Branch để hiển thị select-option trên form
@@ -61,6 +62,29 @@ namespace WEB_TH1.Controllers
             return View();
         }
         [HttpPost("Add")]
+        public IActionResult Create(Student s)
+        {
+            if (ModelState.IsValid)
+            {
+                s.Id = listStudents.Last<Student>().Id + 1;
+                listStudents.Add(s);
+                return View("Index", listStudents);
+            }
+           
+
+            //lấy danh sách các giá trị Gender để hiển thị radio button trên form
+            ViewBag.AllGenders = Enum.GetValues(typeof(Gender)).Cast<Gender>().ToList();
+            //lấy danh sách các giá trị Branch để hiển thị select-option trên form
+            //Để hiển thị select-option trên View cần dùng List<SelectListItem>
+            ViewBag.AllBranches = new List<SelectListItem>(){
+                 new SelectListItem { Text = "IT", Value = "1" },
+                 new SelectListItem { Text = "BE", Value = "2" },
+                 new SelectListItem { Text = "CE", Value = "3" },
+                 new SelectListItem { Text = "EE", Value = "4" }
+            };
+            return View();
+        }
+
         public async Task<ActionResult> Create(Student s, IFormFile avatarfile)
         {
             if (avatarfile != null)
@@ -83,14 +107,15 @@ namespace WEB_TH1.Controllers
                     //Log ex
                     ViewBag.Message = "File Upload Failed";
                 }
-            s.Id = listStudents.Last<Student>().Id + 1;
 
+            s.Id = listStudents.Last<Student>().Id + 1;
 
             if (s.AvatarUrl != null)
                 s.AvatarUrl = Path.Combine("UploadedFiles", s.AvatarUrl);
 
-
+            
             listStudents.Add(s);
+           
             return View("Index", listStudents);
         }
 

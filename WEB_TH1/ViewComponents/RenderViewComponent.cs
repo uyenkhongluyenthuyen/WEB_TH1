@@ -19,9 +19,12 @@ namespace WEB_TH1.ViewComponents
             };
         }
 
+        //truyền thông k  đồng bộ
         public async Task<IViewComponentResult> InvokeAsync()
         {
             return View("RenderLeftMenu", MenuItems);
         }
+        // truyền thông đồng bộ 
+
     }
 }
