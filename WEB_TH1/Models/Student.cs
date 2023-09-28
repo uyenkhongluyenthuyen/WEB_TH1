@@ -22,7 +22,7 @@ namespace WEB_TH1.Models
         public string? Password { get; set; }//Mật khẩu
         [Required]
         public Branch? Branch { get; set; }//Ngành học
-        [Required]
+        [Required(ErrorMessage ="Bạn Phải chọn giới tính")]
         public Gender? Gender { get; set; }//Giới tính
         [Required]
         public bool IsRegular { get; set; }//Hệ: true-chính qui, false-phi cq
@@ -32,7 +32,7 @@ namespace WEB_TH1.Models
         [Range(typeof(DateTime), "1/1/1963", "12/31/2005", ErrorMessage = "Ngày tháng bắt buộc phải được chọn trong khoảng 1/1/1963 - 31/12/2005")]
         [DataType(DataType.Date)]
         [Required(ErrorMessage ="Bạn phải chọn ngày sinh")]
-        public DateTime DateOfBorth { get; set; }//Ngày sinh
+        public DateTime? DateOfBorth { get; set; }//Ngày sinh
         [Required(ErrorMessage ="Bạn phải nhập điểm")]
         [Range(typeof(float), "0.0", "10.0", ErrorMessage = "Điểm phải từ 0.0 tới 10.0")]
         [RegularExpression(@"^\d+(\.\d{1,1})?$", ErrorMessage = "Điểm chỉ được chứa một chữ số sau dấu chấm")]
