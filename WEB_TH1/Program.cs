@@ -1,8 +1,16 @@
-using WEB_TH1.Services.Interfaces;
+﻿using WEB_TH1.Services.Interfaces;
 using WEB_TH1.Services;
-var builder = WebApplication.CreateBuilder(args);
+using Microsoft.EntityFrameworkCore;
+using WEB_TH1.Data;
 
+var builder = WebApplication.CreateBuilder(args);
+//builder.Configuration
 // Add services to the container.
+
+// .SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("Secrets.json");
+//Đăng ký SchoolContext là một DbContext của ứng dụng
+builder.Services.AddDbContext<SchoolContext>(options => options
+.UseSqlServer(builder.Configuration.GetConnectionString("SchoolContext")));
 
 builder.Services.AddTransient<IBufferedFileUploadService, BufferedFileUploadLocalService>();
 // Add services to the container.
@@ -10,6 +18,11 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    DbInitializer.Initialize(services);
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
