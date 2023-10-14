@@ -24,16 +24,22 @@ namespace WEB_TH1.Controllers
             }
             else
             {
-                var learners = db.Learners.Where(l => l.MajorID == mid).Include(m => m.Major).ToList();
+                //lọc các chuyên ngành 
+                //LINQ kết hợp với biểu thức lamda where lấy MajorID = mid sau đó inner join với major để lấy tên của majorID tương uuwngs với mid truyền vào 
+                var learners = db.Learners
+                            .Where(l => l.MajorID == mid)
+                            .Include(m => m.Major).ToList();
                 return View(learners);
             }
             
         }
-        //tạo chức năng lọc các learner theo major id (ajax)
+        //tạo chức năng lọc các learner theo major id (ajax) load dữ liệu ko đông bộ bằng javascipt và 
+        // khi click vào chỉ thay đổi phần list learner , còn các phần khác như hearder , footer , menu thì vẫn giữ nguyên -> load trên 1 trang , trả về learner table
+
         public IActionResult LearnerByMajorID(int mid)
         {
             var learners = db.Learners.Where(l => l.MajorID == mid).Include(m => m.MajorID).ToList();
-            return PartialView("LearnerTable", learners);
+            return PartialView("LearnerTable", learners);   // trả về learner table - nó là 1 Partialview
         }
         //thêm 2 action create
         public IActionResult Create()

@@ -11,7 +11,7 @@
 <div class="ms-2 mx-2">
     <h1>Learner List</h1>
     @await Component.InvokeAsync("Major")
-    <div id="content">
+    <div id="content"> @* đánh dấu the div để bao cái table learner , khi action PartialView("TableLearner", Learner) được gọi thì cái thẻ div này sẽ bao cái table Learner*@
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -44,15 +44,16 @@
     </div>
     <a asp-action="Create" class="btn btn-primary">Create New Student</a>
 </div>
+@*viết script đê thực thi hàm thay đổi vùng div content chứ table learner*@
 @section Scripts{
     <script>
-        $("li").click(function(e) {
-            var id = $(this).attr("id");
+        $("li").click(function(e) { // khi click vào thẻ li ( chứ các tên MajorID thì sẽ thực thi hàm sau). trong trường hợp dự án có nhiêu thể li khác nhau thì mình phải đặt id cho li
+            var id = $(this).attr("id"); //lấy cái biến id 
             $.ajax({
-                url: "LearnerByMajorID",
-                data: { mid: id},
+                url: "LearnerByMajorID", // chạy cái action LearnerBy Major
+                data: { mid: id},     // dât gửi lên chính là cái id 
                 success: function (response){
-                    $("div#content").html(response);
+                    $("div#content").html(response); // thay đổi cái html bằng cái response nhận được (chính là cái table learner) thẻ div có id Content sẽ bao cái table learner sau khi reponse
                 }
             });
         });
