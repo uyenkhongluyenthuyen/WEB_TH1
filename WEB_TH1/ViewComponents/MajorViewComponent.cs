@@ -13,10 +13,11 @@ namespace WEB_TH1.ViewComponents
         public MajorViewComponent(SchoolContext _context)
         {
             db = _context;
-            majors = db.Majors.ToList();
+          majors = db.Majors.ToList();
 
         }
         public async Task<IViewComponentResult> InvokeAsync()
+
         {
             return View("RenderMajor", majors);
         }

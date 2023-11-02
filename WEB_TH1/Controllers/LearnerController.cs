@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Security.Policy;
 using WEB_TH1.Data;
 using WEB_TH1.Models;
@@ -14,33 +16,69 @@ namespace WEB_TH1.Controllers
         {
             db = context;
         }
+
+        private int pageSize = 2;
         public IActionResult Index(int? mid)
         {
-            //var learners = db.Learners.Include(m => m.Major).ToList();
-            if(mid == null)
+            var learners = (IQueryable<Learner>)db.Learners.Include(m => m.Major);
+          
+           if(mid != null)
             {
-                var learners = db.Learners.Include(m => m.Major).ToList();
-                return View(learners);
+                learners = (IQueryable<Learner>)db.Learners
+                     .Where(l => l.MajorID == mid)
+                     .Include(m => m.Major);
+
             }
-            else
-            {
-                //lọc các chuyên ngành 
-                //LINQ kết hợp với biểu thức lamda where lấy MajorID = mid sau đó inner join với major để lấy tên của majorID tương uuwngs với mid truyền vào 
-                var learners = db.Learners
-                            .Where(l => l.MajorID == mid)
-                            .Include(m => m.Major).ToList();
-                return View(learners);
-            }
-            
+            int pageNum = (int)Math.Ceiling(learners.Count() / (float)pageSize);
+            ViewBag.pageNum = pageNum;
+
+            var result = learners.Take(pageSize).ToList();
+            return View(result);
         }
-        //tạo chức năng lọc các learner theo major id (ajax) load dữ liệu ko đông bộ bằng javascipt và 
-        // khi click vào chỉ thay đổi phần list learner , còn các phần khác như hearder , footer , menu thì vẫn giữ nguyên -> load trên 1 trang , trả về learner table
+        public IActionResult LearnerFilter(int? mid, string? keyword, int? pageIndex)
+        {
+            var learners = (IQueryable<Learner>)db.Learners;
+            //int pageSize = 1;
+            int page = (int)(pageIndex == null || pageIndex <= 0 ? 1 : pageIndex);
+            if(mid != null)
+            {
+                learners = learners.Where(l=>l.MajorID == mid);
+                ViewBag.mid = mid;
+            }
+            if(keyword != null)
+            {
+                learners = learners.Where(l=>l.FirstMidName.ToLower()
+                          .Contains(keyword.ToLower()));
+                ViewBag.keyword = keyword;  
+            }
+
+            int pageNum = (int)Math.Ceiling(learners.Count() / (float)pageSize);
+            ViewBag.pageNum = pageNum;
+
+             var result = learners
+             .Skip(pageSize * (page - 1))
+             .Take(pageSize)
+             .Include(m => m.Major);  // Thay vì Include(m => m.MajorID)
+
+
+
+            return PartialView("LearnerTable",result);
+        }
+
 
         public IActionResult LearnerByMajorID(int mid)
         {
-            var learners = db.Learners.Where(l => l.MajorID == mid).Include(m => m.MajorID).ToList();
+            var learners = db.Learners.Where(l => l.MajorID == mid).Include(m => m.Major).ToList();
             return PartialView("LearnerTable", learners);   // trả về learner table - nó là 1 Partialview
         }
+
+
+        //tạo chức năng lọc các learner theo major id (ajax) load dữ liệu ko đông bộ bằng javascipt và 
+        // khi click vào chỉ thay đổi phần list learner , còn các phần khác như hearder , footer , menu thì vẫn giữ nguyên -> load trên 1 trang , trả về learner table
+
+
+
+
         //thêm 2 action create
         public IActionResult Create()
         {
@@ -60,6 +98,7 @@ namespace WEB_TH1.Controllers
             ViewBag.MajorID = majors;
             ViewBag.MajorID = new SelectList(db.Majors, "MajorID", "MajorName"); //cách 2
             return View();
+             
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -93,6 +132,7 @@ Learner learner)
             ViewBag.MajorID = new SelectList(db.Majors, "MajorID", "MajorName", learner.MajorID);
             return View(learner);
 
+            
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

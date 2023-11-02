@@ -10,7 +10,8 @@
         @*thêm  id="@m.MajorID"*@
         <li class="nav-item" id="@m.MajorID">   @**@
             @*bỏ thuộc tính : asp-controller="Learner" asp-action="Index""*@
-            <a asp-route-mid = "@m.MajorID" class="nav-link">@m.MajorName</a>
+            @*asp-route-mid = "@m.MajorID" *@
+            <a  class="nav-link">@m.MajorName</a>
         </li>
     }
 </ul>
